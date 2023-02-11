@@ -1,0 +1,7 @@
+#!/bin/bash
+
+riscv64-linux-gnu-as -o snowflake-collection-linux.o snowflake-collection-linux.s -march=rv32im
+riscv64-linux-gnu-ld -T mecrisp.ld -z max-page-size=4096 -o snowflake-collection-linux snowflake-collection-linux.o -m elf32lriscv
+riscv64-linux-gnu-objdump -Mnumeric -D snowflake-collection-linux > snowflake-collection-linux.list
+
+rm -f snowflake-collection-linux.o

@@ -1,0 +1,69 @@
+
+snowflake-collection.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <Reset>:
+   0:	40021737          	lui	x14,0x40021
+   4:	400071b7          	lui	x3,0x40007
+   8:	57fd                	li	x15,-1
+   a:	cf1c                	sw	x15,24(x14)
+   c:	cf5c                	sw	x15,28(x14)
+   e:	40011637          	lui	x12,0x40011
+  12:	80062023          	sw	x0,-2048(x12) # 40010800 <GPIOA_BASE>
+  16:	67c1                	lui	x15,0x10
+  18:	0785                	addi	x15,x15,1
+  1a:	40f1a023          	sw	x15,1024(x3) # 40007400 <DAC_BASE+0x400>
+
+0000001e <nextflake>:
+  1e:	000254b7          	lui	x9,0x25
+  22:	01379613          	slli	x12,x15,0x13
+  26:	825d                	srli	x12,x12,0x17
+  28:	00479693          	slli	x13,x15,0x4
+  2c:	86dd                	srai	x13,x13,0x17
+
+0000002e <continue>:
+  2e:	4401                	li	x8,0
+  30:	8a32                	mv	x20,x12
+  32:	8ab6                	mv	x21,x13
+
+00000034 <mandala>:
+  34:	3ff60513          	addi	x10,x12,1023
+  38:	3ff68593          	addi	x11,x13,1023
+  3c:	0506                	slli	x10,x10,0x1
+  3e:	05c6                	slli	x11,x11,0x11
+  40:	8d4d                	or	x10,x10,x11
+  42:	97aa                	add	x15,x15,x10
+  44:	42a1a023          	sw	x10,1056(x3)
+
+00000048 <mandala_next_point_on_cycle>:
+  48:	201d                	jal	6e <mandala_cycle_aint>
+  4a:	96aa                	add	x13,x13,x10
+  4c:	8536                	mv	x10,x13
+  4e:	5a8285b7          	lui	x11,0x5a828
+  52:	200d                	jal	74 <mandala_cycle_bint>
+  54:	962a                	add	x12,x12,x10
+  56:	2821                	jal	6e <mandala_cycle_aint>
+  58:	96aa                	add	x13,x13,x10
+  5a:	14fd                	addi	x9,x9,-1
+  5c:	d0e9                	beqz	x9,1e <nextflake>
+  5e:	0405                	addi	x8,x8,1
+  60:	fd461ae3          	bne	x12,x20,34 <mandala>
+  64:	fd5698e3          	bne	x13,x21,34 <mandala>
+
+00000068 <drawitagain>:
+  68:	8025                	srli	x8,x8,0x9
+  6a:	d855                	beqz	x8,1e <nextflake>
+  6c:	b7c9                	j	2e <continue>
+
+0000006e <mandala_cycle_aint>:
+  6e:	8532                	mv	x10,x12
+  70:	cafb15b7          	lui	x11,0xcafb1
+
+00000074 <mandala_cycle_bint>:
+  74:	050a                	slli	x10,x10,0x2
+  76:	02b51533          	mulh	x10,x10,x11
+  7a:	0505                	addi	x10,x10,1
+  7c:	8505                	srai	x10,x10,0x1
+  7e:	8082                	ret

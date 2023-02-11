@@ -1,0 +1,87 @@
+
+--------------------------------------------------------------------------------
+  Snowflake Collection
+  Lovebyte 2023
+  Mecrisp
+
+  Matthias Koch
+  m-atthias@users.sf.net
+  http://mecrisp.sourceforge.net/
+--------------------------------------------------------------------------------
+
+Winter season artwork, running in 128 bytes on a RISC-V microcontroller,
+using two DAC channels for vector graphics on an analog oscilloscope.
+
+Snowflake Collection is designed for GD32VF103 microcontrollers and
+draws vector graphics on an analog oscilloscope in XY mode
+connected to
+
+   GND and the two DAC channels on pins
+   PA4 (vertical) and
+   PA5 (horizontal).
+
+--------------------------------------------------------------------------------
+  Design ideas:
+--------------------------------------------------------------------------------
+
+The snowflake shapes are generated with an old, but obscure "Mandala" algorithm:
+Rotations of pixels by fractional angles in closed cycles on integer coordinates
+sometimes result in long, interesting and artistic curves.
+
+Proof-of-concept Mandala algorithm code for Gforth is included
+for further exploration.
+
+The same algorithm is also used to generate the sun
+at the beginning of "Weather Forecast", Lovebyte 2022:
+https://www.pouet.net/prod.php?which=90944
+
+I am not aware of a way to calculate in advance which length cycles starting
+from a specific point will have, or how to select start coordinates to get
+cycles of a certain minimum length. Therefore, random start coordinates are
+generated with a counter. When a sufficient long cycle is found, it is
+displayed for a fixed amount of time.
+
+Real snowflakes usually have a 6-fold symmetry,
+but the 8-fold symmetry shapes generated look better in this demo :-)
+
+--------------------------------------------------------------------------------
+  How to run:
+--------------------------------------------------------------------------------
+
+If you have connected your
+
+Longan Nano board to
+             a USB-serial cable with 3.3V logic levels
+
+3V3 or 5V -- VCC (measure the voltage present here)
+R0        -- TXD
+T0        -- RXD
+GND       -- GND
+
+you can flash it if you first
+
+* Press and hold BOOT0 button
+* Press and release Reset button
+* Release BOOT0 button
+
+and then execute
+
+stm32loader -e -w -v -p /dev/ttyUSB0 snowflake-collection.bin
+
+on your host machine.
+
+Press and release Reset button to start demo.
+
+
+PS: There is also a version for Linux with qemu-user-static
+    that uses a mmap'ed 1920x1080x32bpp framebuffer through syscalls
+    so that you can at least try the effects of Snowflake Collection
+    on your desktop machine.
+
+--------------------------------------------------------------------------------
+  Credits:
+--------------------------------------------------------------------------------
+
+* Mandala algorithm based on integer rotations:
+
+https://web.archive.org/web/20061211143039/www.tiac.net/~sw/2005/03/Mandala/index.html

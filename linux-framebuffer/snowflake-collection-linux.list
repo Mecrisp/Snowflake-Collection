@@ -1,0 +1,145 @@
+
+snowflake-collection-linux:     file format elf32-littleriscv
+
+
+Disassembly of section mecrisp:
+
+00010000 <_start>:
+   10000:	f9c00513          	li	x10,-100
+   10004:	00000597          	auipc	x11,0x0
+   10008:	1de58593          	addi	x11,x11,478 # 101e2 <device>
+   1000c:	4609                	li	x12,2
+   1000e:	03800893          	li	x17,56
+   10012:	00000073          	ecall
+
+00010016 <framebuffer_mmap>:
+   10016:	872a                	mv	x14,x10
+   10018:	4501                	li	x10,0
+   1001a:	007e95b7          	lui	x11,0x7e9
+   1001e:	460d                	li	x12,3
+   10020:	4685                	li	x13,1
+   10022:	4781                	li	x15,0
+   10024:	0de00893          	li	x17,222
+   10028:	00000073          	ecall
+   1002c:	81aa                	mv	x3,x10
+   1002e:	4f81                	li	x31,0
+   10030:	67c1                	lui	x15,0x10
+   10032:	0785                	addi	x15,x15,1
+   10034:	a0ed                	j	1011e <nextflake>
+	...
+
+00010100 <Reset>:
+   10100:	40021737          	lui	x14,0x40021
+   10104:	400071b7          	lui	x3,0x40007
+   10108:	57fd                	li	x15,-1
+   1010a:	cf1c                	sw	x15,24(x14)
+   1010c:	cf5c                	sw	x15,28(x14)
+   1010e:	40011637          	lui	x12,0x40011
+   10112:	80062023          	sw	x0,-2048(x12) # 40010800 <GPIOA_BASE>
+   10116:	67c1                	lui	x15,0x10
+   10118:	0785                	addi	x15,x15,1
+   1011a:	40f1a023          	sw	x15,1024(x3) # 40007400 <DAC_BASE+0x400>
+
+0001011e <nextflake>:
+   1011e:	000254b7          	lui	x9,0x25
+   10122:	01379613          	slli	x12,x15,0x13
+   10126:	825d                	srli	x12,x12,0x17
+   10128:	00479693          	slli	x13,x15,0x4
+   1012c:	86dd                	srai	x13,x13,0x17
+
+0001012e <continue>:
+   1012e:	2061                	jal	101b6 <clrscr>
+   10130:	4401                	li	x8,0
+   10132:	8a32                	mv	x20,x12
+   10134:	8ab6                	mv	x21,x13
+
+00010136 <mandala>:
+   10136:	3ff60513          	addi	x10,x12,1023
+   1013a:	3ff68593          	addi	x11,x13,1023
+   1013e:	0506                	slli	x10,x10,0x1
+   10140:	05c6                	slli	x11,x11,0x11
+   10142:	8d4d                	or	x10,x10,x11
+   10144:	97aa                	add	x15,x15,x10
+   10146:	282d                	jal	10180 <paintpixel>
+
+00010148 <mandala_next_point_on_cycle>:
+   10148:	201d                	jal	1016e <mandala_cycle_aint>
+   1014a:	96aa                	add	x13,x13,x10
+   1014c:	8536                	mv	x10,x13
+   1014e:	5a8285b7          	lui	x11,0x5a828
+   10152:	200d                	jal	10174 <mandala_cycle_bint>
+   10154:	962a                	add	x12,x12,x10
+   10156:	2821                	jal	1016e <mandala_cycle_aint>
+   10158:	96aa                	add	x13,x13,x10
+   1015a:	14fd                	addi	x9,x9,-1
+   1015c:	d0e9                	beqz	x9,1011e <nextflake>
+   1015e:	0405                	addi	x8,x8,1
+   10160:	fd461be3          	bne	x12,x20,10136 <mandala>
+   10164:	fd5699e3          	bne	x13,x21,10136 <mandala>
+
+00010168 <drawitagain>:
+   10168:	8025                	srli	x8,x8,0x9
+   1016a:	d855                	beqz	x8,1011e <nextflake>
+   1016c:	b7c9                	j	1012e <continue>
+
+0001016e <mandala_cycle_aint>:
+   1016e:	8532                	mv	x10,x12
+   10170:	cafb15b7          	lui	x11,0xcafb1
+
+00010174 <mandala_cycle_bint>:
+   10174:	050a                	slli	x10,x10,0x2
+   10176:	02b51533          	mulh	x10,x10,x11
+   1017a:	0505                	addi	x10,x10,1
+   1017c:	8505                	srai	x10,x10,0x1
+   1017e:	8082                	ret
+
+00010180 <paintpixel>:
+   10180:	83aa                	mv	x7,x10
+   10182:	82aa                	mv	x5,x10
+   10184:	0102d293          	srli	x5,x5,0x10
+   10188:	6205                	lui	x4,0x1
+   1018a:	127d                	addi	x4,x4,-1
+   1018c:	0043f3b3          	and	x7,x7,x4
+   10190:	0042f2b3          	and	x5,x5,x4
+   10194:	0023d393          	srli	x7,x7,0x2
+   10198:	0022d293          	srli	x5,x5,0x2
+   1019c:	038a                	slli	x7,x7,0x2
+   1019e:	6209                	lui	x4,0x2
+   101a0:	e0020213          	addi	x4,x4,-512 # 1e00 <DACC_R12DH+0x19e0>
+   101a4:	02520233          	mul	x4,x4,x5
+   101a8:	9392                	add	x7,x7,x4
+   101aa:	938e                	add	x7,x7,x3
+   101ac:	6241                	lui	x4,0x10
+   101ae:	127d                	addi	x4,x4,-1
+   101b0:	0043a023          	sw	x4,0(x7)
+   101b4:	8082                	ret
+
+000101b6 <clrscr>:
+   101b6:	0f85                	addi	x31,x31,1
+   101b8:	6509                	lui	x10,0x2
+   101ba:	00afdc63          	bge	x31,x10,101d2 <bye>
+   101be:	850e                	mv	x10,x3
+   101c0:	007e95b7          	lui	x11,0x7e9
+   101c4:	958e                	add	x11,x11,x3
+   101c6:	00052023          	sw	x0,0(x10) # 2000 <DACC_R12DH+0x1be0>
+   101ca:	0511                	addi	x10,x10,4
+   101cc:	feb51de3          	bne	x10,x11,101c6 <clrscr+0x10>
+   101d0:	8082                	ret
+
+000101d2 <bye>:
+   101d2:	4501                	li	x10,0
+   101d4:	4581                	li	x11,0
+   101d6:	4601                	li	x12,0
+   101d8:	4681                	li	x13,0
+   101da:	05d00893          	li	x17,93
+   101de:	00000073          	ecall
+
+000101e2 <device>:
+   101e2:	7665642f          	0x7665642f
+   101e6:	3062662f          	0x3062662f
+   101ea:	0000                	unimp
+   101ec:	00000013          	nop
+   101f0:	00000013          	nop
+   101f4:	00000013          	nop
+   101f8:	00000013          	nop
+   101fc:	00000013          	nop

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+riscv64-linux-gnu-as snowflake-collection.s -o snowflake-collection.o -march=rv32im
+riscv64-linux-gnu-ld -o snowflake-collection.elf -T memmap snowflake-collection.o -m elf32lriscv
+riscv64-linux-gnu-objdump -Mnumeric -D snowflake-collection.elf > snowflake-collection.list
+riscv64-linux-gnu-objcopy snowflake-collection.elf snowflake-collection.bin -O binary
+
+rm -f snowflake-collection.o
+rm -f snowflake-collection.elf
+
+md5sum *.bin
+ls -l *.bin
